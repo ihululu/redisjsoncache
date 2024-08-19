@@ -65,7 +65,7 @@ func (c *Cache) loadAccountsToRedis() {
 	}
 
 	for _, account := range accounts {
-		err := c.rdb.Set(c.ctx, account.Address, account.Name, 0).Err()
+		err := c.rdb.Set(c.ctx, "ton_assets:"+account.Address, account.Name, 0).Err()
 		if err != nil {
 			fmt.Println("Error setting value in Redis:", err)
 		}
@@ -99,7 +99,7 @@ func (c *Cache) parseAccounts(jsonContent string) ([]Account, error) {
 }
 
 func (c *Cache) GetNameByAddress(address string) (string, error) {
-	name, err := c.rdb.Get(c.ctx, address).Result()
+	name, err := c.rdb.Get(c.ctx, "ton_assets:"+address).Result()
 	if err == redis.Nil {
 		return "", errors.New("address not found")
 	} else if err != nil {
